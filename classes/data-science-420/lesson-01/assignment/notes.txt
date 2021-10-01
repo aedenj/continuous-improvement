@@ -1,0 +1,34 @@
+Identify what aspect of the problem can be best solved in a probablistic vs a heuristic or determistic way.
+
+Frame the goal or solution in a way that minimizes risks of users having a poor experience.
+In general, a model can perform well on data it hasn’t seen before as long as it is similar enough to the data it was exposed to during training.
+For most applications, popularity can help alleviate data gathering requirements. If
+
+Ameisen, Emmanuel. Building Machine Learning Powered Applications (Kindle Locations 769-770). O'Reilly Media. Kindle Edition.
+
+What can I extract from the unstructured data?
+  * Apply generative for translation, which maps sentences in one language to another; summarization; subtitle generation, which maps videos and audio tracks to transcripts; and neural style transfer.
+
+
+Does the data have features that are predictive of the target output?
+
+What is the condition of the data?
+  * Is it labelled data? This is the ideal situation as the labels provide the ground truth.
+  * Is it a weakly labelled set? Are there features that are highly correlated with the target.
+  * A completely unlabelled set. This is the case most of the time.
+    - How can one collect or generated more data?
+
+Because most data sets in the domain your attempting to solve a product problem are unlabelled you will need to iterate on the exact product problem you are going to solve as you continuous assess the data you have and could have.
+
+We have a product goal and now need to decide which modeling approach to use. To make this decision, we will go through the iteration loop of model selection and data validation mentioned earlier.
+
+
+Model
+
+* Start with a strawman baseline. Potentially something that manual (e.g. manual steps from a professional)
+
+Performance requirements
+  Define both success and guardrail metrics.
+
+
+

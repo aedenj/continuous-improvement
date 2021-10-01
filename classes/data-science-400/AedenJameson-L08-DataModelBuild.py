@@ -1,0 +1,231 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+print(
+'''
+Author: Aeden Jameson
+
+Project: Assignment 7
+
+Data Description: Hepatitis Data Set 
+
+  I. Source: https://archive.ics.uci.edu/ml/datasets/hepatitis
+    
+  
+  II. Characteristics:
+      
+    Number of Attributes: 20
+    Number of Observations: 155
+    
+    
+  III. Attributes - Name, Type, Distribution
+     class               int64  die: 32 live: 123
+     age                 int64  Normal Distribution
+     sex                 int64  male: 139, female: 16
+     steroid            object  no: 76, yes: 78, ?: 1
+     antivirals          int64  no: 24, yes: 131
+     fatigue            object  no: 100, yes: 54, ?: 1
+     malaise            object  no: 93, yes: 61, ?: 1
+     anorexia           object  no: 61, yes, 93, ?: 1
+     liver big          object  no: 25, yes: 120, ?: 10
+     liver firm         object  no: 60, yes:  84, ?: 11
+     spleen palpable    object  no: 30, yes: 120, ?: 5
+     spiders            object  no: 51, yes: 99, ?: 5
+     ascites            object  no: 20, yes: 130, ?: 5
+     varices            object  no: 18, yes: 132, ?: 5
+     bilirubin          object  bi-modal distribution skewed right
+     alk phosphate      object  skewed right
+     sgot               object  bi-modal distribution skewed right
+     albumin            object  skewed-right
+     protime            object  skewed-right
+     histology           int64  no: 84, yes: 70
+
+  III. Missing & Outlier Values
+
+    All of the following variables had both missing values, indicated by '?',
+    and outliers,
+    
+        protime
+        sgot  
+        
+  Values were considered outliers if they fell outside two standard deviations of 
+  the mean. All missing values were replaced because it appeared that all columns
+  had a sensible median. 
+    
+
+  IV. Removed Attributes
+
+    None
+
+
+  V. Removed Rows
+
+    No rows were removed. After sifting throught the data I didn't see obvious
+    candidates, but I'm probably wrong.
+'''
+)
+    
+from sklearn.preprocessing import *
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.model_selection import train_test_split
+
+url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/hepatitis/hepatitis.data'
+patients = pd.read_csv(url, header=None)
+patients.columns = ["class","age", "sex", "steroid", "antivirals", "fatigue", "malaise", 
+"anorexia", "liver big", "liver firm", "spleen palpable", "spiders", "ascites","varices",
+"bilirubin", "alk phosphate", "sgot", "albumin", "protime", "histology"]
+
+
+# Returns the data set with the missing values replaced with the median. 
+def replace_missing(data, column, dtype):
+    data.loc[:, column] = pd.to_numeric(data.loc[:, column], errors='coerce')
+    HasNan = np.isnan(data.loc[:, column])
+    data.loc[HasNan, column] = np.nanmedian(data.loc[:,column])
+    data.loc[:,column] = data.loc[:,column].astype(int)
+    return data
+
+# Returns the data with the outliers replaced with the mean. Values that 
+# lie two standard deviations from the mean are replaced.
+def replace_outliers(data, column):
+    flag_good = gaussian_dist_filter(data, column)
+    data.loc[~flag_good, column] = np.mean(data.loc[flag_good, column])
+
+    return data
+
+# replaces missing data and outliers
+def cleanse(data, column, dtype): 
+  missing_fixed = replace_missing(data, column, dtype)
+  return replace_outliers(missing_fixed, column)
+
+# a helper method that returns a boolean array that can be
+# to filter values that fall within two standard
+# deviations 
+def gaussian_dist_filter(data, column):
+    hi = np.mean(data.loc[:,column]) + 2*np.std(data.loc[:,column])
+    low = np.mean(data.loc[:,column]) - 2*np.std(data.loc[:,column])
+    flag_good = (data.loc[:,column] >= low) & (data.loc[:,column] <= hi)
+    
+    return flag_good
+
+
+
+print("Hepatitis Data Set " )
+print(f'Column Names: {list(patients.columns)}')
+print('\n')
+columns = [
+    "protime",
+    "sgot",
+    "age"
+]
+for c in columns:   
+  print(f'*********** Replace Missing: {c} Column *******************')
+  print(f'# Values Missing: {len(list(patients.loc[patients.loc[:, c] == "?", c]))}\n')
+  print(f'Original Values: {list(patients.loc[:, c])}\n')
+  patients = replace_missing(patients, c, int)
+  print(f'# Values After: {len(list(patients.loc[patients.loc[:, c] == "?", c]))}\n')
+  print(f'After Replace: {list(patients.loc[0:9, c])}')
+  print('\n')
+
+for c in columns: 
+  flag_good = gaussian_dist_filter(patients, c)
+  print(f'*********** Replace Outliers: {c} Column *******************')
+  print(f'Original Values: {list(patients.loc[0:9, c])}\n')
+  print(f'Outliers: {list(patients.loc[~flag_good, c])}\n')
+  patients = replace_outliers(patients, c)
+  print(f'After Replace: {list(patients.loc[0:9, c])}\n')
+  print('\n')
+
+
+for c in columns: 
+  print(f'*********** Z-Normalize: {c} Column *******************')
+  print(f'Values Before: {list(patients.loc[0:9,c])}\n')
+  offset = np.mean(list(patients.loc[:, c]))
+  spread = np.std(list(patients.loc[:, c]))
+  patients[f'z-norm {c}'] = (patients.loc[:, c] - offset)/spread
+  print(f'Z-Norm Values: {list(patients.loc[0:9, "z-norm " + c])}')
+  print('\n')
+
+plt.hist(patients.loc[:,"z-norm sgot"])
+
+
+print(
+'''
+QUESTION: Do hepatitis patients 40-50 with lower prothrombin times die?
+
+Expert Label: Class
+
+Decision Comments: The column labelled class contains whether the patients
+lived or died
+'''      
+)
+
+
+
+print(f'********* Perform K-Means on age vs protime - Not Normalized ************************')
+X = patients.filter(["age", "protime"])
+kmeans = KMeans(n_clusters=7, random_state=0).fit(X.values)
+plt.scatter(X.loc[:, "age"], X.loc[:, "protime"], c=kmeans.labels_.astype(float), s=50, alpha=0.5)
+centroids = kmeans.cluster_centers_
+plt.scatter(centroids[:, 0], centroids[:, 1], c='red', s=50)
+plt.title('Age (yrs) vs Prothrombin Time in Hepatitis Patients (secs)')
+plt.xlabel('Age (yrs)')
+plt.ylabel('Prothrombin Time (secs)')
+plt.show()
+
+
+print(f'********* Perform K-Means on age vs protime - Z-Normalized ************************')
+xNorm = patients.filter(["z-norm age", "z-norm protime"])
+normKmeans = KMeans(n_clusters=7, random_state=0).fit(xNorm.values)
+plt.scatter(xNorm.loc[:, "z-norm age"], xNorm.loc[:, "z-norm protime"], c=normKmeans.labels_.astype(float), s=50, alpha=0.5)
+normCentroids = normKmeans.cluster_centers_
+plt.scatter(normCentroids[:, 0], normCentroids[:, 1], c='red', s=50)
+plt.title('Age vs Prothrombin Time in Hepatitis Patients')
+plt.xlabel('Age')
+plt.ylabel('Prothrombin Time')
+plt.show()
+
+print("***********   Add labels to the dataset  *****************************")
+xNorm["class"] = patients["class"]
+xNorm["labels"] = kmeans.labels_
+print(xNorm.head())
+
+
+print("***********   Create Train & Test *****************************")
+print("Explanation: Just use the good ole 80/20 rule cause reasons")
+TrainSet, TestSet=train_test_split(xNorm, test_size=0.2)
+
+# Logistic regression classifier
+print ('\n\n\nLogistic regression classifier\n')
+C_parameter = 50. / len(xNorm) # parameter for regularization of the model
+class_parameter = 'ovr' # parameter for dealing with multiple classes
+penalty_parameter = 'l1' # parameter for the optimizer (solver) in the function
+solver_parameter = 'saga' # optimization system used
+tolerance_parameter = 0.1 # termination parameter
+#####################
+
+#Training the Model
+clf = LogisticRegression(C=C_parameter, multi_class=class_parameter, penalty=penalty_parameter, solver=solver_parameter, tol=tolerance_parameter)
+clf.fit(TrainSet.loc[:,["z-norm age", "z-norm protime", "labels"]], TrainSet.loc[:,"class"]) 
+print ('coefficients:')
+print (clf.coef_) # each row of this matrix corresponds to each one of the classes of the dataset
+print ('intercept:')
+print (clf.intercept_) # each element of this vector corresponds to each one of the classes of the dataset
+
+
+# Apply the Model
+print ('predictions for test set:')
+predictions = clf.predict(TestSet.loc[:,["z-norm age", "z-norm protime", "labels"]])
+TestSet["prediction"] = predictions
+print (predictions)
+#####################
+
+
+print("\n\n*****************  All The Test Data ****************************")
+print(TestSet.to_string())
+
+print(f'\n\n*****************  Accurracy Rate: { 25 / 31 }  ****************************')
+
+

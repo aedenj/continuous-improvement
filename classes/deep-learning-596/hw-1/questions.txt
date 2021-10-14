@@ -1,0 +1,16 @@
+Questions
+-----------
+* In the first paragraph of problem 1 "Higher variance
+usually means greater information in this direction."
+
+* Problem 1 part 2 states to perform PCA on train and test, but what about validation? yes, just omitted
+
+* What are you looking for the request for explanation?
+
+* Scaling before PCA isn't necessary because all the features are the same scale? 
+
+* What is meant by scaling & grouping in the kmeans question?
+
+* Point 5 states, ". Evaluate the distribution mentioned in 2)" What should we be actually doing? Surely not printing the distributions
+
+* How does one produce a mat file?

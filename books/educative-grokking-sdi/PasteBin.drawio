@@ -1,11 +1,59 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36" version="24.7.6">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15" version="24.7.6">
   <diagram name="Page-1" id="mc4gksa36mkFXbbOVomd">
-    <mxGraphModel dx="2414" dy="1476" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1108" dy="1004" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="KUJzeEmUjwlKIUor0_Qf-3" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Functional Requirements&lt;/h1&gt;&lt;p&gt;* As a user I would like to share text via a url with other people&lt;/p&gt;&lt;p&gt;* Pastes have an expiration&lt;/p&gt;&lt;p&gt;* Users should be able to pick a custom alias&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="1" vertex="1">
-          <mxGeometry x="-663" y="-254" width="511" height="228" as="geometry" />
+        <mxCell id="KUJzeEmUjwlKIUor0_Qf-3" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Functional Requirements&lt;/h1&gt;&lt;p&gt;* As a user I would like to share text via a url with other people&lt;/p&gt;&lt;p&gt;* Pastes have an expiration&lt;/p&gt;&lt;p&gt;* Users should be able to pick a custom alias&lt;/p&gt;&lt;p&gt;* Provide a Rest API for other services&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-329" y="-116" width="518" height="157" as="geometry" />
+        </mxCell>
+        <mxCell id="KUJzeEmUjwlKIUor0_Qf-5" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Non-Functional Requirements&lt;/h1&gt;&lt;div&gt;* The system should be highly available&lt;/div&gt;&lt;div&gt;* Minimize latency&lt;/div&gt;&lt;div&gt;* Links should not be guessable&lt;/div&gt;&lt;div&gt;*&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-325" y="56" width="614" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="KUJzeEmUjwlKIUor0_Qf-6" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Capacity &amp;amp; Constraints&lt;/h1&gt;&lt;div&gt;* Limit a paste to 10 MB&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Traffic Estimates&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;* &lt;/b&gt;Assume 1M / day &amp;nbsp;~= 12 / Sec new pastes, Reads: 5M / day &amp;nbsp;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-325" y="182" width="503" height="188" as="geometry" />
+        </mxCell>
+        <mxCell id="KUJzeEmUjwlKIUor0_Qf-7" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Key Characteristics&lt;/h1&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;* System will be read heavy&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-322" y="407" width="544" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="KUJzeEmUjwlKIUor0_Qf-10" value="Actor" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-290" y="703" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="KUJzeEmUjwlKIUor0_Qf-11" value="" style="shape=datastore;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-77" y="873" width="75" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="KUJzeEmUjwlKIUor0_Qf-13" value="" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="-77" y="683" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="KUJzeEmUjwlKIUor0_Qf-14" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;curved=1;exitX=1;exitY=0.3333333333333333;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="KUJzeEmUjwlKIUor0_Qf-10" target="KUJzeEmUjwlKIUor0_Qf-13">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="85" y="671" as="sourcePoint" />
+            <mxPoint x="135" y="621" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KUJzeEmUjwlKIUor0_Qf-15" value="Application Server" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="-67" y="706" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="KUJzeEmUjwlKIUor0_Qf-16" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;curved=1;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-33" y="769" as="sourcePoint" />
+            <mxPoint x="-35" y="885" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KUJzeEmUjwlKIUor0_Qf-17" value="" style="shape=datastore;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="186" y="688" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="KUJzeEmUjwlKIUor0_Qf-18" value="Metadata Store" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="-67" y="941" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="KUJzeEmUjwlKIUor0_Qf-19" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;curved=1;entryX=0.4;entryY=0.683;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" target="KUJzeEmUjwlKIUor0_Qf-17">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="7" y="732" as="sourcePoint" />
+            <mxPoint x="135" y="863" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KUJzeEmUjwlKIUor0_Qf-20" value="Object Store" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="192" y="922" width="60" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

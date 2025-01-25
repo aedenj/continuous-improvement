@@ -1,0 +1,5 @@
+streamlit
+gdown==5.2.0
+numpy
+torch==2.5.1
+sentence-transformers==3.4.0

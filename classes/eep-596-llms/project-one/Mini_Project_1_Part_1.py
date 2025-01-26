@@ -245,7 +245,7 @@ def cosine_similarity(x, y):
     (20 pts)
     """
 
-    cs = np.dot(x, y) / (np.la.norm(x) * np.la.norm(y))
+    cs = np.dot(x, y) / (la.norm(x) * la.norm(y))
     return np.exp(cs)
 
 # Task II: Average Glove Embedding Calculation
@@ -282,6 +282,7 @@ def get_sorted_cosine_similarity(search_text, embeddings_metadata):
     5. Return sorted cosine similarity
     (50 pts)
     """
+
     categories = st.session_state.categories.split(" ")
     cosine_sim = {}
     if embeddings_metadata["embedding_model"] == "glove":
@@ -296,7 +297,7 @@ def get_sorted_cosine_similarity(search_text, embeddings_metadata):
 
         for c in categories:
             cat_embed = get_glove_embeddings(c, word_index_dict, embeddings, model_type)
-            cosine_sim[c] = cosine_similarity(input_embedding, c)
+            cosine_sim[c] = cosine_similarity(input_embedding, cat_embed)
 
     else:
         model_name = embeddings_metadata["model_name"]

@@ -1,6 +1,6 @@
 
 ## Mini Project 1 - Part 1: Getting Familiar with Word Embeddings.
-# This assignment introduces students to text similarity measures using cosine similarity and sentence embeddings. 
+# This assignment introduces students to text similarity measures using cosine similarity and sentence embeddings.
 # Students will implement and compare different methods for computing and analyzing text similarity using GloVe and Sentence Transformers.
 
 #Learning Objectives
@@ -10,11 +10,12 @@
 #Compare the performance of different embedding techniques.
 #Create a Web interface for your model
 
-# Context: In this part, you are going to play around with some commonly used pretrained text embeddings for text search. For example, GloVe is an unsupervised learning algorithm for obtaining vector representations for words. Pretrained on 
-# 2 billion tweets with vocabulary size of 1.2 million. Download from [Stanford NLP](http://nlp.stanford.edu/data/glove.twitter.27B.zip). 
+# Context: In this part, you are going to play around with some commonly used pretrained text embeddings for text search. For example, GloVe is an unsupervised learning algorithm for obtaining vector representations for words. Pretrained on
+# 2 billion tweets with vocabulary size of 1.2 million. Download from [Stanford NLP](http://nlp.stanford.edu/data/glove.twitter.27B.zip).
 # Jeffrey Pennington, Richard Socher, and Christopher D. Manning. 2014. *GloVe: Global Vectors for Word Representation*.
 
 ### Import necessary libraries: here you will use streamlit library to run a text search demo, please make sure to install it.
+import re
 import streamlit as st
 import numpy as np
 import numpy.linalg as la
@@ -47,7 +48,7 @@ def get_model_id_gdrive(model_type):
     elif model_type == "100d":
         word_index_id = "1-oWV0LqG3fmrozRZ7WB1jzeTJHRUI3mq"
         embeddings_id = "1SRHfX130_6Znz7zbdfqboKosz-PfNvNp"
-        
+
     return word_index_id, embeddings_id
 
 
@@ -93,7 +94,7 @@ def get_sentence_transformer_embeddings(sentence, model_name="all-MiniLM-L6-v2")
     Get sentence transformer embeddings for a sentence
     """
     # 384 dimensional embedding
-    # Default model: https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2  
+    # Default model: https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
 
     sentenceTransformer = load_sentence_transformer_model(model_name)
 
@@ -143,7 +144,7 @@ def update_category_embeddings(embeddings_metadata):
 
 
 ### Plotting utility functions
-    
+
 def plot_piechart(sorted_cosine_scores_items):
     sorted_cosine_scores = np.array([
             sorted_cosine_scores_items[index][1]
@@ -243,11 +244,10 @@ def cosine_similarity(x, y):
     3. Return exponentiated cosine similarity
     (20 pts)
     """
-    ##################################
-    ### TODO: Add code here ##########
-    ##################################
-    pass
-    
+
+    cs = np.dot(x, y) / (np.la.norm(x) * np.la.norm(y))
+    return np.exp(cs)
+
 # Task II: Average Glove Embedding Calculation
 def averaged_glove_embeddings_gdrive(sentence, word_index_dict, embeddings, model_type=50):
     """
@@ -259,14 +259,19 @@ def averaged_glove_embeddings_gdrive(sentence, word_index_dict, embeddings, mode
     5. Return averaged embeddings
     (30 pts)
     """
+
+    words = re.findall(r"\w+", sentence)
+
     embedding = np.zeros(int(model_type.split("d")[0]))
-    ##################################
-    ##### TODO: Add code here ########
-    ##################################
+    for w in words:
+        word_embedding = get_glove_embeddings(w, word_index_dict, embeddings, model_type)
+        embedding = embedding + word_embedding
+
+    return embedding / len(words)
 
 
 # Task III: Sort the cosine similarity
-def get_sorted_cosine_similarity(embeddings_metadata):
+def get_sorted_cosine_similarity(search_text, embeddings_metadata):
     """
     Get sorted cosine similarity between input sentence and categories
     Steps:
@@ -287,10 +292,11 @@ def get_sorted_cosine_similarity(embeddings_metadata):
         input_embedding = averaged_glove_embeddings_gdrive(st.session_state.text_search,
                                                             word_index_dict,
                                                             embeddings, model_type)
-        
-        ##########################################
-        ## TODO: Get embeddings for categories ###
-        ##########################################
+
+
+        for c in categories:
+            cat_embed = get_glove_embeddings(c, word_index_dict, embeddings, model_type)
+            cosine_sim[c] = cosine_similarity(input_embedding, c)
 
     else:
         model_name = embeddings_metadata["model_name"]
@@ -308,24 +314,24 @@ def get_sorted_cosine_similarity(embeddings_metadata):
             pass
             ##########################################
             # TODO: Compute cosine similarity between input sentence and categories
-            # TODO: Update category embeddings if category not found  
+            # TODO: Update category embeddings if category not found
             ##########################################
 
-    return 
+    return sorted(cosine_sim.items(), key=lambda x: x[1])
 
 
 ### Below is the main function, creating the app demo for text search engine using the text embeddings.
 
 if __name__ == "__main__":
     ### Text Search ###
-    ### There will be Bonus marks of 10% for the teams that submit a URL for your deployed web app. 
+    ### There will be Bonus marks of 10% for the teams that submit a URL for your deployed web app.
     ### Bonus: You can also submit a publicly accessible link to the deployed web app.
 
     st.sidebar.title("GloVe Twitter")
     st.sidebar.markdown(
         """
-    GloVe is an unsupervised learning algorithm for obtaining vector representations for words. Pretrained on 
-    2 billion tweets with vocabulary size of 1.2 million. Download from [Stanford NLP](http://nlp.stanford.edu/data/glove.twitter.27B.zip). 
+    GloVe is an unsupervised learning algorithm for obtaining vector representations for words. Pretrained on
+    2 billion tweets with vocabulary size of 1.2 million. Download from [Stanford NLP](http://nlp.stanford.edu/data/glove.twitter.27B.zip).
 
     Jeffrey Pennington, Richard Socher, and Christopher D. Manning. 2014. *GloVe: Global Vectors for Word Representation*.
     """

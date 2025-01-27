@@ -173,6 +173,7 @@ def plot_piechart_helper(sorted_cosine_scores_items):
         categories[sorted_cosine_scores_items[index][0]]
         for index in range(len(sorted_cosine_scores_items))
     ]
+
     fig, ax = plt.subplots(figsize=(3, 3))
     my_explode = np.zeros(len(categories_sorted))
     my_explode[0] = 0.2
@@ -246,6 +247,7 @@ def cosine_similarity(x, y):
     """
 
     cs = np.dot(x, y) / (la.norm(x) * la.norm(y))
+
     return np.exp(cs)
 
 # Task II: Average Glove Embedding Calculation

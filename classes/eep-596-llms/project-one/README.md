@@ -1,7 +1,7 @@
 ## Semantic Search
 
 
-From what I can gather this project with work with python 3.10 at most. I'm not a seasoned Python develop and from what I gather the ecosystem of development tools is very fractured and so the approach below for project management may not be the current community conscensus.
+From what I can gather this project will work with python 3.10 at most. I'm not a seasoned Python developer and from what I gather the ecosystem of development tools is very fractured so the approach below for package management may not be the current community conscensus.
 
 1. First, let's install Python 3.10.
     ```

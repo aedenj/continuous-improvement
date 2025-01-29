@@ -309,12 +309,11 @@ def get_sorted_cosine_similarity(search_text, embeddings_metadata):
             if c not in category_embeddings:
                 update_category_embeddings(embeddings_metadata)
                 category_embeddings = st.session_state["cat_embed_" + model_name]
-                print(f"UPDATED CATEGORIES: {category_embeddings}")
 
             cosine_sim[c] = cosine_similarity(input_embedding, category_embeddings[c])
 
 
-    return sorted(cosine_sim.items(), key=lambda x: x[1])
+    return sorted(cosine_sim.items(), key=lambda x: x[1], reverse=True)
 
 
 ### Below is the main function, creating the app demo for text search engine using the text embeddings.
@@ -334,7 +333,8 @@ if __name__ == "__main__":
     """
     )
 
-    model_type = st.sidebar.selectbox("Choose the model", ("25d", "50d", "100d"), index=1)
+    # 100d has been removed per https://discord.com/channels/1325577137771511819/1325577201260822548/1333478652410728560
+    model_type = st.sidebar.selectbox("Choose the model", ("25d", "50d"), index=1)
 
 
     st.title("Search Based Retrieval Demo")

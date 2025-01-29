@@ -125,7 +125,7 @@ def get_category_embeddings(embeddings_metadata):
     """
     model_name = embeddings_metadata["model_name"]
     st.session_state["cat_embed_" + model_name] = {}
-    for category in st.session_state.categories.split(" "):
+    for category in st.session_state.categories.strip().split(" "):
         if model_name:
             if not category in st.session_state["cat_embed_" + model_name]:
                 st.session_state["cat_embed_" + model_name][category] = get_sentence_transformer_embeddings(category, model_name=model_name)
@@ -162,17 +162,8 @@ def plot_piechart(sorted_cosine_scores_items):
 
 
 def plot_piechart_helper(sorted_cosine_scores_items):
-    sorted_cosine_scores = np.array(
-        [
-            sorted_cosine_scores_items[index][1]
-            for index in range(len(sorted_cosine_scores_items))
-        ]
-    )
-    categories = st.session_state.categories.split(" ")
-    categories_sorted = [
-        categories[sorted_cosine_scores_items[index][0]]
-        for index in range(len(sorted_cosine_scores_items))
-    ]
+    sorted_cosine_scores = np.array([s[1] for s in sorted_cosine_scores_items])
+    categories_sorted = [s[0] for s in sorted_cosine_scores_items]
 
     fig, ax = plt.subplots(figsize=(3, 3))
     my_explode = np.zeros(len(categories_sorted))
@@ -285,7 +276,7 @@ def get_sorted_cosine_similarity(search_text, embeddings_metadata):
     (50 pts)
     """
 
-    categories = st.session_state.categories.split(" ")
+    categories = st.session_state.categories.strip().split(" ")
     cosine_sim = {}
     if embeddings_metadata["embedding_model"] == "glove":
         word_index_dict = embeddings_metadata["word_index_dict"]
@@ -313,12 +304,15 @@ def get_sorted_cosine_similarity(search_text, embeddings_metadata):
             input_embedding = get_sentence_transformer_embeddings(st.session_state.text_search, model_name=model_name)
         else:
             input_embedding = get_sentence_transformer_embeddings(st.session_state.text_search)
-        for index in range(len(categories)):
-            pass
-            ##########################################
-            # TODO: Compute cosine similarity between input sentence and categories
-            # TODO: Update category embeddings if category not found
-            ##########################################
+
+        for c in categories:
+            if c not in category_embeddings:
+                update_category_embeddings(embeddings_metadata)
+                category_embeddings = st.session_state["cat_embed_" + model_name]
+                print(f"UPDATED CATEGORIES: {category_embeddings}")
+
+            cosine_sim[c] = cosine_similarity(input_embedding, category_embeddings[c])
+
 
     return sorted(cosine_sim.items(), key=lambda x: x[1])
 

@@ -258,7 +258,7 @@ def averaged_glove_embeddings_gdrive(sentence, word_index_dict, embeddings, mode
     embedding = np.zeros(int(model_type.split("d")[0]))
     for w in words:
         word_embedding = get_glove_embeddings(w, word_index_dict, embeddings, model_type)
-        embedding = embedding + word_embedding
+        embedding += word_embedding
 
     return embedding / len(words)
 

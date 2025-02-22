@@ -7,16 +7,6 @@ from langchain_pinecone import PineconeVectorStore
 from langchain_openai import OpenAIEmbeddings
 
 
-# Define a function to get the conversation history (Not required for Part-2, will be useful in Part-3)
-def get_conversation() -> str:
-    # return: A formatted string representation of the conversation.
-    conversation = ""
-    for message in st.session_state.messages:
-        conversation += "Role: " + str(message["role"]) + "Content: " + str(message["content"] + ". ")
-
-    return conversation
-
-
 
 class Head_Agent:
     def __init__(self, openai_key, pinecone_key, pinecone_index_name) -> None:

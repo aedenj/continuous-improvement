@@ -57,14 +57,14 @@ class Head_Agent:
             # Generate AI response
             with st.chat_message("assistant"):
                 # ... (send request to OpenAI API)
-                message = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages]
+                history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages]
 
                 if self._obnoxious_agent.is_true(prompt) or self._injection_agent.is_true(prompt):
                     response = "Sorry, I cannot answer this question."
                     st.write(response)
                 else:
                     relevant_docs = self._query_agent.query_vector_store(prompt)
-                    answer_stream = self._answering_agent.generate_response(prompt, relevant_docs, message, MOOD.TALKATIVE)
+                    answer_stream = self._answering_agent.generate_response(prompt, relevant_docs, history, MOOD.TALKATIVE)
 
                     response = st.write_stream(answer_stream)
 

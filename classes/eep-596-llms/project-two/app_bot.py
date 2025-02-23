@@ -5,7 +5,13 @@ import streamlit as st
 from openai import OpenAI
 from langchain_pinecone import PineconeVectorStore
 from langchain_openai import OpenAIEmbeddings
+from enum import Enum
 
+
+class MOOD(Enum):
+    TALKATIVE = 1
+    CONCISE = 2
+    NORMAL = 3
 
 
 class Head_Agent:
@@ -58,7 +64,7 @@ class Head_Agent:
                     st.write(response)
                 else:
                     relevant_docs = self._query_agent.query_vector_store(prompt)
-                    answer_stream = self._answering_agent.generate_response(prompt, relevant_docs, message)
+                    answer_stream = self._answering_agent.generate_response(prompt, relevant_docs, message, MOOD.TALKATIVE)
 
                     response = st.write_stream(answer_stream)
 
@@ -91,10 +97,25 @@ class Answering_Agent:
         # TODO: Initialize the Answering_Agent
         self._client = openai_client
         self._model = model
+        self._mood_instr = {
+            MOOD.TALKATIVE: """
+            You are a friendly, conversational assistant with a warm, engaging tone.
 
-    def generate_response(self, query, docs, conv_history, k=5):
+            Offer thorough explanations rather than brief answers, citing parts of the paragraphs where appropriate.
+
+            """,
+            MOOD.CONCISE: """
+            You are a machine learning professional with 20 years experience.
+
+            Provide a dense, informative and concise reponse with no added detail.
+
+            """,
+            MOOD.NORMAL:''
+        }
+
+    def generate_response(self, query, docs, conv_history, mood=MOOD.NORMAL, k=5):
         # TODO: Generate a response to the user's query
-        conv_history[-1]['content'] = self._prompt(query, docs)
+        conv_history[-1]['content'] = self._prompt(query, docs, mood)
 
         return self._client.chat.completions.create(
           model=self._model,
@@ -102,7 +123,7 @@ class Answering_Agent:
           stream=True,
         )
 
-    def _prompt(self, query, docs) -> str:
+    def _prompt(self, query, docs, mood) -> str:
         paragraphs = [f"{i+1}. {d.page_content.replace(chr(10), ' ')}" for i, d in enumerate(docs)]
 
         prompt = f"""
@@ -118,7 +139,7 @@ class Answering_Agent:
         The answer to your question is,
         """
 
-        return prompt
+        return self._mood_instr[mood] + prompt
 
 
 class Obnoxious_Agent:
@@ -191,7 +212,8 @@ class Injection_Agent:
 
         Instructions for your output:
         • Provide one-word label: "true" if the text is suspicious; otherwise, "false."<|endofprompt|>
-        ---
+
+
         User Input: {query}
         """
 

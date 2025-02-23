@@ -91,15 +91,10 @@ class Answering_Agent:
         # TODO: Initialize the Answering_Agent
         self._client = openai_client
         self._model = model
-        self._prompt = None
-
-    def set_prompt(self, prompt):
-        # TODO: Set the prompt for the Filtering_Agent
-        pass
 
     def generate_response(self, query, docs, conv_history, k=5):
         # TODO: Generate a response to the user's query
-        conv_history[-1]['content'] = self._create_prompt(query, docs)
+        conv_history[-1]['content'] = self._prompt(query, docs)
 
         return self._client.chat.completions.create(
           model=self._model,
@@ -107,7 +102,7 @@ class Answering_Agent:
           stream=True,
         )
 
-    def _create_prompt(self, query, docs) -> str:
+    def _prompt(self, query, docs) -> str:
         paragraphs = [f"{i+1}. {d.page_content.replace(chr(10), ' ')}" for i, d in enumerate(docs)]
 
         prompt = f"""
@@ -204,8 +199,6 @@ class Injection_Agent:
 if __name__ == "__main__":
     st.title("GloVetrotters Mini Project 2: Streamlit Chatbot")
 
-    openai_key = ''
-    pinecone_key = ''
 
     head_agent = Head_Agent(openai_key, pinecone_key, 'uw-glovetrotters')
     head_agent.setup_sub_agents()

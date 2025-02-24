@@ -1,6 +1,7 @@
 ''' EE P 596 Mini Project Part 2 Streamlit App Chatbot by the GloVetrotters'''
 
 import os
+import inspect
 import streamlit as st
 from openai import OpenAI
 from langchain_pinecone import PineconeVectorStore
@@ -24,55 +25,21 @@ class Head_Agent:
         os.environ['PINECONE_API_KEY'] = pinecone_key
         os.environ['OPENAI_API_KEY'] = openai_key
 
-        # Check for existing session state variables
-        if "openai_model" not in st.session_state:
-            st.session_state.openai_model = 'gpt-3.5-turbo-0125'
 
-        if "messages" not in st.session_state:
-            st.session_state.messages = []
-
-        # Display existing chat messages
-        for message in st.session_state.messages:
-            with st.chat_message(message["role"]):
-                st.markdown(message["content"])
-
-    def setup_sub_agents(self):
-        # TODO: Setup the sub-agents
-        self._injection_agent = Injection_Agent(self._client, st.session_state.openai_model)
-        self._greeting_agent = Greeting_Agent(self._client, st.session_state.openai_model)
+    def setup_sub_agents(self, model):
+        self._injection_agent = Injection_Agent(self._client, model)
+        self._greeting_agent = Greeting_Agent(self._client, model)
         self._query_agent = Query_Agent(self._pinecone_index_name, self._client, OpenAIEmbeddings(model="text-embedding-3-small"))
-        self._answering_agent = Answering_Agent(self._client, st.session_state.openai_model)
+        self._answering_agent = Answering_Agent(self._client, model)
 
-    def main_loop(self):
-        # TODO: Run the main loop for the chatbot
-        if prompt := st.chat_input("What would you like to chat about?"):
-
-            # ... (append user message to messages)
-            st.session_state.messages.append({"role": "user", "content": prompt})
-
-            with st.chat_message("user"):
-                st.markdown(prompt)
-
-
-            # Generate AI response
-            with st.chat_message("assistant"):
-                # ... (send request to OpenAI API)
-                history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages]
-
-                if self._injection_agent.is_true(prompt):
-                    response = "Sorry, I cannot answer this question."
-                    st.write(response)
-                elif self._greeting_agent.is_true(prompt):
-                    response = "Hello! How can I help?"
-                    st.write(response)
-                else:
-                    relevant_docs = self._query_agent.query_vector_store(prompt)
-                    answer_stream = self._answering_agent.generate_response(prompt, relevant_docs, history, MOOD.TALKATIVE)
-
-                    response = st.write_stream(answer_stream)
-
-            # ... (append AI response to messages)
-            st.session_state.messages.append({"role": "assistant", "content": response})
+    def main_loop(self, history):
+        if self._injection_agent.is_true(prompt):
+            return "Sorry, I cannot answer this question."
+        elif self._greeting_agent.is_true(prompt):
+            return "Hello! How can I help?"
+        else:
+            relevant_docs = self._query_agent.query_vector_store(prompt)
+            return self._answering_agent.generate_response(prompt, relevant_docs, history, MOOD.TALKATIVE)
 
 
 
@@ -226,6 +193,45 @@ class Greeting_Agent:
 if __name__ == "__main__":
     st.title("GloVetrotters Mini Project 2: Streamlit Chatbot")
 
+    # Check for existing session state variables
+    if "openai_model" not in st.session_state:
+        st.session_state.openai_model = 'gpt-3.5-turbo-0125'
+
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+
+    # Display existing chat messages
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+
+
     head_agent = Head_Agent(openai_key, pinecone_key, 'uw-glovetrotters')
-    head_agent.setup_sub_agents()
-    head_agent.main_loop()
+    head_agent.setup_sub_agents(st.session_state.openai_model)
+
+    # TODO: Run the main loop for the chatbot
+    if prompt := st.chat_input("What would you like to chat about?"):
+
+        # ... (append user message to messages)
+        st.session_state.messages.append({"role": "user", "content": prompt})
+
+        with st.chat_message("user"):
+            st.markdown(prompt)
+
+
+        # Generate AI response
+        with st.chat_message("assistant"):
+            # ... (send request to OpenAI API)
+            history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages]
+
+            answer = head_agent.main_loop(history)
+            if type(answer) == str:
+                st.write(answer)
+                response = answer
+            else:
+                response = st.write_stream(answer)
+
+        # ... (append AI response to messages)
+        st.session_state.messages.append({"role": "assistant", "content": response})
+

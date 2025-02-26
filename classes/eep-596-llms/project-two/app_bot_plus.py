@@ -26,12 +26,15 @@ class Head_Agent:
         os.environ['OPENAI_API_KEY'] = openai_key
 
     def setup_sub_agents(self, model):
-        self._injection_agent = Injection_Agent(self._client, model)
+        self._filter_agent = Filter_Agent(self._client, model)
         self._query_agent = Query_Agent(self._pinecone_index_name, self._client, OpenAIEmbeddings(model="text-embedding-3-small"))
         self._answering_agent = Answering_Agent(self._client, model)
 
     def main_loop(self, history):
-        if self._injection_agent.is_true(prompt):
+        category = self._filter_agent.classify(prompt)
+        if category.lower() == 'greeting':
+            return "Hello! How can I help?"
+        elif category.lower() in ('obnoxious', 'prompt injection'):
             return "Sorry, I cannot answer this question."
         else:
             relevant_docs = self._query_agent.query_vector_store(prompt)
@@ -100,13 +103,13 @@ class Answering_Agent:
         return self._mood_instr[mood] + prompt
 
 
-class Injection_Agent:
+class Filter_Agent:
     def __init__(self, client, model) -> None:
         self._client = client
         self._model = model
 
 
-    def is_true(self, query) -> bool:
+    def classify(self, query) -> str:
         message = {"role": "assistant", "content": self._prompt(query)}
 
         response = self._client.chat.completions.create(
@@ -115,11 +118,7 @@ class Injection_Agent:
           stream=False,
         )
 
-        print(response.choices[0].message.content)
-        if response.choices[0].message.content == 'true':
-            return True
-        else:
-            return False
+        return response.choices[0].message.content
 
 
     def _prompt(self, query):
@@ -151,7 +150,8 @@ class Injection_Agent:
         Stop evaluating after the first match.
 
         Instructions for your output:
-        • Provide the first one-word label that is the name of the category above.<|endofprompt|>
+        • Provide the first one-word label that is the name of the category above.
+        <|endofprompt|>
 
         User Input: {query}
         """
@@ -159,7 +159,6 @@ class Injection_Agent:
 
 if __name__ == "__main__":
     st.title("GloVetrotters Mini Project 2: Streamlit Chatbot")
-
 
     # Check for existing session state variables
     if "openai_model" not in st.session_state:

@@ -27,18 +27,22 @@ class Head_Agent:
 
     def setup_sub_agents(self, model):
         self._filter_agent = Filter_Agent(self._client, model)
+        self._followup_agent = FollowUp_Agent(self._client, model)
         self._query_agent = Query_Agent(self._pinecone_index_name, self._client, OpenAIEmbeddings(model="text-embedding-3-small"))
         self._answering_agent = Answering_Agent(self._client, model)
 
-    def main_loop(self, history):
-        category = self._filter_agent.classify(prompt)
+    def main_loop(self, query, history):
+
+        new_query = self._followup_agent.extract(query, history)
+
+        category = self._filter_agent.classify(new_query)
         if category.lower() == 'greeting':
             return "Hello! How can I help?"
         elif category.lower() in ('obnoxious', 'prompt injection'):
             return "Sorry, I cannot answer this question."
         else:
-            relevant_docs = self._query_agent.query_vector_store(prompt)
-            return self._answering_agent.generate_response(prompt, relevant_docs, history, MOOD.TALKATIVE)
+            relevant_docs = self._query_agent.query_vector_store(new_query)
+            return self._answering_agent.generate_response(new_query, relevant_docs, history, MOOD.TALKATIVE)
 
 
 
@@ -156,6 +160,50 @@ class Filter_Agent:
         User Input: {query}
         """
 
+class FollowUp_Agent:
+    def __init__(self, client, model) -> None:
+        self._client = client
+        self._model = model
+
+
+    def extract(self, query, history) -> str:
+        message = {"role": "assistant", "content": self._prompt(query, history)}
+
+        response = self._client.chat.completions.create(
+          model=self._model,
+          messages=[message],
+          stream=False,
+        )
+
+        return response.choices[0].message.content
+
+    def _prompt(self, query, convo):
+        return f"""
+        TASK: I want to formulate a query for my Pinecone Vectory Store to find relevant documents.
+        Your job is to read the user's input and generate a prompt according to the numbered rules below.
+
+
+        1. Follow Up Question - Any user request that:
+
+        If the user input contain phrases like: "Tell me more", "Explain in detail"
+        then generate a question that take the following converation history into account:
+        {convo}
+
+        For example, if the query is 'tell me more' or 'explain in more detail' and the previous conversation history
+        contains 'what is logistic regression?' then the generated prompt should look like,
+        PROMPT: 'Expand on the topic of logistic regression and provide more details.'
+
+        2. Not a follow up question
+
+        If user input is not a follow up question then return the original use input as the prompt
+
+
+        Instructions for your output:
+        • Provide a prompt that is short and to the point.
+        • Only return the prompt and not the explanation of the prompt.
+
+        User Input: {query}
+        """
 
 if __name__ == "__main__":
     st.title("GloVetrotters Mini Project 2: Streamlit Chatbot")
@@ -190,9 +238,12 @@ if __name__ == "__main__":
         # Generate AI response
         with st.chat_message("assistant"):
             # ... (send request to OpenAI API)
-            history = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages]
+            history = [
+                {"role": m["role"], "content": m["content"]}
+                for m in st.session_state.messages
+            ]
 
-            answer = head_agent.main_loop(history)
+            answer = head_agent.main_loop(prompt, history)
             if type(answer) == str:
                 st.write(answer)
                 response = answer

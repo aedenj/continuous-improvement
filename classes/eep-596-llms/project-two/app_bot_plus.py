@@ -35,7 +35,7 @@ class Head_Agent:
 
         new_query = self._followup_agent.extract(query, history)
 
-        category = self._filter_agent.classify(new_query)
+        category = self._filter_agent.classify(query)
         if category.lower() == 'greeting':
             return "Hello! How can I help?"
         elif category.lower() in ('obnoxious', 'prompt injection'):

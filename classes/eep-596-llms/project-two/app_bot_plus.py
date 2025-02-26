@@ -167,6 +167,9 @@ class FollowUp_Agent:
 
 
     def extract(self, query, history) -> str:
+        if len(history) < 2:
+            return query
+
         message = {"role": "assistant", "content": self._prompt(query, history)}
 
         response = self._client.chat.completions.create(
@@ -187,7 +190,7 @@ class FollowUp_Agent:
 
         If the user input contain phrases like: "Tell me more", "Explain in detail"
         then generate a question that take the following converation history into account:
-        {convo}
+        {convo[-2]}
 
         For example, if the query is 'tell me more' or 'explain in more detail' and the previous conversation history
         contains 'what is logistic regression?' then the generated prompt should look like,

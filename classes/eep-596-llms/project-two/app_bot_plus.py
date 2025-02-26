@@ -33,14 +33,13 @@ class Head_Agent:
 
     def main_loop(self, query, history):
 
-        new_query = self._followup_agent.extract(query, history)
-
         category = self._filter_agent.classify(query)
         if category.lower() == 'greeting':
             return "Hello! How can I help?"
         elif category.lower() in ('obnoxious', 'prompt injection'):
             return "Sorry, I cannot answer this question."
         else:
+            new_query = self._followup_agent.extract(query, history)
             relevant_docs = self._query_agent.query_vector_store(new_query)
             return self._answering_agent.generate_response(new_query, relevant_docs, history, MOOD.TALKATIVE)
 
@@ -210,7 +209,6 @@ class FollowUp_Agent:
 
 if __name__ == "__main__":
     st.title("GloVetrotters Mini Project 2: Streamlit Chatbot")
-
     # Check for existing session state variables
     if "openai_model" not in st.session_state:
         st.session_state.openai_model = 'gpt-3.5-turbo-0125'

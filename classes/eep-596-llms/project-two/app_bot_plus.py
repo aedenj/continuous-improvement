@@ -209,6 +209,9 @@ class FollowUp_Agent:
 
 if __name__ == "__main__":
     st.title("GloVetrotters Mini Project 2: Streamlit Chatbot")
+    openai_key = 'key'
+    pinecone_key = 'key'
+
     # Check for existing session state variables
     if "openai_model" not in st.session_state:
         st.session_state.openai_model = 'gpt-3.5-turbo-0125'

@@ -3470,8 +3470,8 @@
     {
       "id": "zVf6F5N0bvfWrpmWDEn_5",
       "type": "rectangle",
-      "x": 2608.72321428572,
-      "y": -405.758370535693,
+      "x": 2608.064732142863,
+      "y": -405.11104910712163,
       "width": 228.4765625,
       "height": 136.484375,
       "angle": 0,
@@ -3489,8 +3489,8 @@
         "type": 3
       },
       "seed": 478100830,
-      "version": 178,
-      "versionNonce": 1132536094,
+      "version": 181,
+      "versionNonce": 1231917442,
       "isDeleted": false,
       "boundElements": [
         {
@@ -3506,16 +3506,16 @@
           "id": "ldIGs9qy4If0EBN3BHAHM"
         }
       ],
-      "updated": 1750139537549,
+      "updated": 1750292268066,
       "link": null,
       "locked": false
     },
     {
       "id": "ldIGs9qy4If0EBN3BHAHM",
       "type": "text",
-      "x": 2613.72321428572,
-      "y": -400.758370535693,
-      "width": 197.89987182617188,
+      "x": 2613.064732142863,
+      "y": -400.11104910712163,
+      "width": 198.93984985351562,
       "height": 75,
       "angle": 0,
       "strokeColor": "#1e1e1e",
@@ -3530,29 +3530,29 @@
       "index": "b0uV",
       "roundness": null,
       "seed": 1038580574,
-      "version": 96,
-      "versionNonce": 1081043742,
+      "version": 105,
+      "versionNonce": 1428813570,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1750140504464,
+      "updated": 1750292271206,
       "link": null,
       "locked": false,
-      "text": "Consume Followers\n* Build Follow Cache\n* Build Celebs",
+      "text": "Consume Followers\n* Build Follow Cache\n* Build Celebs Cache",
       "fontSize": 20,
       "fontFamily": 5,
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": "zVf6F5N0bvfWrpmWDEn_5",
-      "originalText": "Consume Followers\n* Build Follow Cache\n* Build Celebs",
+      "originalText": "Consume Followers\n* Build Follow Cache\n* Build Celebs Cache",
       "autoResize": true,
       "lineHeight": 1.25
     },
     {
       "id": "6JV4ZLUqrK-xHJPWnuXzx",
       "type": "arrow",
-      "x": 2842.1997767857206,
-      "y": -348.95033482140724,
-      "width": 349.157366071428,
+      "x": 2841.5412946428632,
+      "y": -348.30301339283585,
+      "width": 349.8158482142853,
       "height": 35,
       "angle": 0,
       "strokeColor": "#1e1e1e",
@@ -3567,11 +3567,11 @@
       "index": "b0v",
       "roundness": null,
       "seed": 1867845314,
-      "version": 100,
-      "versionNonce": 1840095810,
+      "version": 103,
+      "versionNonce": 875862274,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1750138510428,
+      "updated": 1750292268067,
       "link": null,
       "locked": false,
       "points": [
@@ -3580,20 +3580,20 @@
           0
         ],
         [
-          151.12974330356747,
+          151.45898437499636,
           0
         ],
         [
-          151.12974330356747,
-          17.31082589283568
+          151.45898437499636,
+          16.663504464264292
         ],
         [
-          349.157366071428,
-          17.31082589283568
+          349.8158482142853,
+          16.663504464264292
         ],
         [
-          349.157366071428,
-          -17.68917410716432
+          349.8158482142853,
+          -18.336495535735708
         ]
       ],
       "lastCommittedPoint": null,
@@ -3625,10 +3625,10 @@
     {
       "id": "8yiYIttUjVBKhRrlmcKbm",
       "type": "arrow",
-      "x": 2722.86149553572,
-      "y": -264.273995535693,
-      "width": 27.171022456082483,
-      "height": 248.13058035712544,
+      "x": 2722.203013392863,
+      "y": -263.62667410712163,
+      "width": 27.82950459893982,
+      "height": 247.48325892855405,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -3642,11 +3642,11 @@
       "index": "b0w",
       "roundness": null,
       "seed": 299896130,
-      "version": 399,
-      "versionNonce": 422186718,
+      "version": 402,
+      "versionNonce": 1778264258,
       "isDeleted": false,
       "boundElements": null,
-      "updated": 1750140164785,
+      "updated": 1750292268067,
       "link": null,
       "locked": false,
       "points": [
@@ -3656,15 +3656,15 @@
         ],
         [
           0,
-          124.06529017856272
+          123.74162946427703
         ],
         [
-          27.171022456082483,
-          124.06529017856272
+          27.82950459893982,
+          123.74162946427703
         ],
         [
-          27.171022456082483,
-          248.13058035712544
+          27.82950459893982,
+          247.48325892855405
         ]
       ],
       "lastCommittedPoint": null,

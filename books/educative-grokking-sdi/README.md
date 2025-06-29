@@ -8,5 +8,6 @@ Various attempts at standard system design questions.
 
 ## Design Instagram
 
-![instagram excalidraw](https://github.com/user-attachments/assets/78b8eea6-bf81-49e4-8a28-24326cc3e595)
+![instagram excalidraw](https://github.com/user-attachments/assets/5f093513-d138-4d68-90cb-3643ef528264)
+
 

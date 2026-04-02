@@ -1,0 +1,374 @@
+\documentclass[11pt]{article}
+
+% --- Packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{xparse}        % for NewDocumentEnvironment with optional args
+\usepackage{enumitem}
+\usepackage{tikz}
+\usepackage{ifthen}
+\usepackage{comment}       % to exclude solution blocks when hidden
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{caption}  % Optional, for better caption formatting
+
+% --- Page layout ---
+\geometry{margin=1in}
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+
+% --- Fancy header ---
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\Class}
+\lhead{\HomeworkTitle}
+\cfoot{\thepage}
+
+% --- Visual helpers: points badge ---
+\newcommand{\pointsbadge}[1]{%
+  \tikz[baseline=(X.base)] \node[draw,rounded corners=2pt,fill=gray!10,inner sep=3pt] (X) {\small #1 pts};%
+}
+
+% --- Problem environment ---
+% Usage:
+%   \begin{problem}[<points>]{<Title>}
+%   ...
+%   \end{problem}
+\NewDocumentEnvironment{problem}{m m}{%
+  \vspace{6pt}
+  \noindent\begin{tcolorbox}[colback=white,colframe=black!30,boxrule=0.6pt,arc=2pt,left=2pt,right=2pt]
+    \textbf{Problem #1 \pointsbadge{#2}:}
+    \medskip
+}{%
+  \end{tcolorbox}
+  \vspace{4pt}
+}
+
+% --- Student answer area ---
+% Usage:
+%   \begin{studentanswer}[<lines>]  % default lines = 6
+%   \end{studentanswer}
+% This creates vertical space equal to <lines> * \baselineskip with a subtle dotted guideline.
+\NewDocumentEnvironment{studentanswer}{ O{6} }{%
+  \vspace{6pt}
+  \begingroup
+  \setlength{\parindent}{0pt}%
+  \noindent\textit{Answer:}
+  % Repeated dotted line block
+  \par\noindent
+  \vspace{#1\baselineskip}
+  \par\noindent
+  \endgroup
+}{%
+  % nothing special on end
+}
+
+% --- Helpful small commands ---
+\newcommand{\points}[1]{\hfill \textit{(#1 pts)}}
+\newcommand{\breakpage}{\vspace{12pt}\hrule\vspace{12pt}}
+
+% --- Header info macros (customize per assignment) ---
+\newcommand{\Class}{CSED501}
+\newcommand{\Instructor}{Taylor Kessler Faulkner}
+\newcommand{\DueDate}{Due: \textbf{November 18, 2025}}
+\newcommand{\HomeworkTitle}{Homework \#3}
+\newcommand{\StudentName}{\underline{\hspace{5cm}} }
+
+\begin{document}
+
+
+\begin{center}
+  {\LARGE \HomeworkTitle} \\
+  \vspace{6pt}
+  {\large \Class} \\
+  \vspace{4pt}
+  \Instructor \hfill \DueDate \\
+  \vspace{8pt}
+  Name: \StudentName
+\end{center}
+
+\textbf{Instructions:}
+Complete the questions below and upload a PDF containing your written answers to Gradescope. 
+\begin{itemize}
+    \item Keep your answers within the provided space.
+    \item Answers can be handwritten, or typed and pasted into this PDF. 
+    \item Show your work; this makes giving partial credit easier!
+    \item True/False questions can be answered with \textbf{True/False}, but explanations can be added if you feel they are needed.
+    \item Numeric answers can be given in fraction or decimal form; if decimal, round to 2 places
+\end{itemize}
+
+Assigned reading (links can also be found in Canvas Week 4 Resources):
+\begin{itemize}
+\item Garg, Pratyush, John Villasenor, and Virginia Foggo. \href{https://ieeexplore.ieee.org/abstract/document/9378025?casa_token=TXxdmCHqBIsAAAAA:WL4mzBxwGeVUqa4FkRxZY7A1iAf0HYGAdOHGf3tV2c7VfRobp5bmFfDYXctc5mYWVeWACwTc}{"Fairness metrics: A comparative analysis."} 2020 IEEE international conference on big data (Big Data). IEEE, 2020.
+\end{itemize}
+
+
+\vspace{12pt}
+\hrule
+\vspace{12pt}
+
+\newpage
+
+% ---------------------------
+% Problems
+% ---------------------------
+
+\begin{problem}{1}{7}
+True/False. Mark each statement as True or False and briefly justify your answer.
+\begin{enumerate}[label=(\alph*)]
+\item PCA is effective when the data’s underlying low-dimensional structure is non-linear.
+\item If we are performing clustering, we typically assume we either do not have or do not use labels in training the model.
+\item K-means centroids are always actual data points.
+\item Initializing centroids using k-means++ guarantees convergence to a global optimum.
+\item If the total value of the Within-Cluster Sum of Squares increases between two iterations of k-means, there is a bug in your k-means code.
+\item Given a set of points in a $d$-dimensional space, using PCA to reduce the dataset to $d' < d$ dimensions will always lead to loss of explained variance. 
+\item GMMs assume that the data points within each component follow a Gaussian distribution.
+\end{enumerate}
+\end{problem}
+
+\begin{studentanswer}[30]
+% students write here
+\end{studentanswer}
+
+
+% ------------------------------------------------------------
+\begin{problem}{2}{4}
+Consider the following matrix \( X = \begin{bmatrix} 4 & 1 \\ 5 & 4 \\ 1 & 2 \\ 1 & 0\end{bmatrix} \) with four data points in $\mathbb{R}^2$. We would like to use PCA to find a rank-1 linear representation of these data.
+
+\begin{center}
+    \includegraphics[width=\textwidth]{images/pca.pdf}
+    \captionof{figure}{4 possible PCA directions.}
+    \label{img:pca}
+\end{center}
+
+Which line in Figure~\ref{img:pca} represents the slope of the first principal component? Justify your answer. 
+\end{problem}
+
+\begin{studentanswer}[10]
+% students write here
+\end{studentanswer}
+
+% ------------------------------------------------------------
+\begin{problem}{3}{6}
+Which of the following facts could lead to misleading statistics in criminal justice datasets? Choose one and justify your answer.
+\begin{enumerate}[label=(\alph*)]
+\item Different reported crime rates across different neighborhoods.
+\item Different wrongful arrest rates across different demographic groups.
+\item Differences in local laws (e.g., different laws regarding indoor and outdoor drug sales in Seattle).
+\item All of the above.
+\end{enumerate}
+\end{problem}
+\begin{studentanswer}[5]
+% students write here
+\end{studentanswer}
+
+\newpage
+
+
+
+% ------------------------------------------------------------
+\begin{problem}{4}{12}
+Consider the following dataset in $\mathbb{R}^2$:
+
+\begin{center}
+\begin{tabular}{c|cc}
+\textbf{Point} & $x_i\left[1\right]$ & $x_i\left[2\right]$ \\ \hline
+$x_1$ & 1 & 1 \\ 
+$x_2$ & 2 & 1 \\ 
+$x_3$ & 4 & 3 \\ 
+$x_4$ & 6 & 5 \\ 
+$x_5$ & 7 & 6 \\ 
+$x_6$ & 8 & 5 \\ 
+\end{tabular}
+\end{center}
+
+Start the centroid for cluster 1 at $x_2$ and the centroid for cluster 2 at $x_6$. Perform the k-means algorithm with $k=2$ until the cluster assignments do not change between successive iterations (convergence). Show your work.
+\begin{enumerate}[label=(\alph*)]
+\item What are the final cluster assignments for the data points? (Example notation for assignments: $\begin{bmatrix} 1 & 1 & 2 & 1 & 1 & 1 \end{bmatrix}$.)
+\item How many iterations did the k-means algorithm need to converge? The initialization does not count as an iteration.
+\end{enumerate}
+\end{problem}
+
+\begin{studentanswer}[30]
+% students write here
+\end{studentanswer}
+
+% ------------------------------------------------------------
+\begin{problem}{5}{12}
+Consider the following dataset in $\mathbb{R}^2$:
+
+\begin{center}
+\begin{tabular}{c|cc}
+\textbf{Point} & $x_i\left[1\right]$ & $x_i\left[2\right]$ \\ \hline
+$x_1$ & 1 & 1 \\ 
+$x_2$ & 2 & 1 \\ 
+$x_3$ & 5 & 4 \\ 
+$x_4$ & 6 & 5 \\ 
+\end{tabular}
+\end{center}
+
+Perform agglomerative hierarchical clustering using Euclidean distance and complete linkage. Stop when all points are in one cluster. Show your work and describe the merging sequence.
+
+
+\end{problem}
+
+\begin{studentanswer}[30]
+% students write here
+\end{studentanswer}
+
+
+% ------------------------------------------------------------
+\begin{problem}{6}{6}
+In your own words, describe at least two key differences between clustering and classification. 
+\end{problem}
+
+\begin{studentanswer}[5]
+% students write here
+\end{studentanswer}
+
+\newpage
+% ------------------------------------------------------------
+\begin{problem}{7}{10}
+In Figure~\ref{img:clustering} is the result of applying a clustering algorithm on a dataset where each datapoint has two features. Each cluster has a center marked by a black $\times$.
+
+\begin{center}
+    \includegraphics[width=0.6\textwidth]{images/a3:clustering.png}
+    \captionof{figure}{Clustering Data}
+    \label{img:clustering}
+\end{center}
+
+Not all of the clustering methods that we have covered could create these clusters. Which of the following clustering methods \textbf{could} create these clusters? Justify your answer(s).
+
+\begin{enumerate}[label=(\alph*)]
+\item K-means
+\item DBSCAN
+\item GMM
+\item Agglomerative Clustering
+\end{enumerate}
+
+\end{problem}
+
+\begin{studentanswer}[20]
+% students write here
+\end{studentanswer}
+
+
+% ------------------------------------------------------------
+\begin{problem}{8}{12}
+You are given a dataset of four 2D data points:
+
+\begin{center}
+\begin{tabular}{c|cc}
+\textbf{Point} & $x_i\left[1\right]$ & $x_i\left[2\right]$ \\ \hline
+$x_1$ & 2 & 0 \\
+$x_2$ & 0 & 2 \\
+$x_3$ & 3 & 1 \\
+$x_4$ & 1 & 3 \\
+\end{tabular}
+\end{center}
+
+Perform Principal Component Analysis (PCA) on this dataset by hand to reduce it to one principal component. Show all steps clearly.
+\end{problem}
+
+\begin{studentanswer}[20]
+% students write here
+\end{studentanswer}
+
+
+
+% ------------------------------------------------------------
+\begin{problem}{9}{9}
+A company manufactures electronic components and wants to monitor defective parts on its assembly line. Each part is measured for length, width, and weight. The quality control team decides to use a Gaussian Mixture Model (GMM) to cluster the parts into acceptable and defective clusters. They follow these steps:
+\begin{enumerate}[label=(\alph*)]
+\item Create a dataset consisting of the part features: length, width, and weight. Because they want to detect differences in the features, they decide not to standardize the data so that the defective differences are obvious to the GMM.
+\item Because they want to detect defective parts, they decide to use exactly 2 components, creating two clusters: `acceptable" and `defective."
+\item Because they know GMMs are sensitive to initialization, they perform multiple restarts.
+
+\end{enumerate}
+For each of these steps, state whether it is correct or incorrect, and explain why.
+\end{problem}
+
+\begin{studentanswer}[30]
+% students write here
+\end{studentanswer}
+
+
+% ------------------------------------------------------------
+\begin{problem}{10}{10}
+In 1--2 paragraphs, discuss a problem that you’re interested in solving (this could be related to a work problem, a potential personal project, or just something that interests you) that could be solved with clustering or visualized/simplified with PCA. What kind of data is involved? If solving using clustering, what algorithms would you try and why? If using PCA, how will the new principal components help you solve your problem?
+\end{problem}
+
+\begin{studentanswer}[20]
+% students write here
+\end{studentanswer}
+
+
+% ------------------------------------------------------------
+\begin{problem}{11}{9}
+A bank uses a machine learning model to predict whether loan applicants will repay their loans. The model outputs 1 if it predicts the applicant will repay the loan and 0 if it predicts they will default (a classification problem). The bank wants to ensure that the model is fair across two demographic groups: Group A and Group B. According to the Equal Opportunity definition of fairness, a model is fair if the True Positive Rate (TPR) for each group is within a threshold $\epsilon$ of each other. For this problem, let $\epsilon=0.05$. You are given the following confusion matrices for each group based on a test dataset:
+
+\textbf{Group A}
+\begin{center}
+\begin{tabular}{c|cc}
+& \textbf{Predicted: Repay (1)} & \textbf{Predicted: Default (0)} \\ \hline
+\textbf{Actual: Repay (1)} & 80 & 20 \\
+\textbf{Actual: Default (0)} & 10 & 90 \\
+\end{tabular}
+\end{center}
+
+\textbf{Group B}
+\begin{center}
+\begin{tabular}{c|cc}
+& \textbf{Predicted: Repay (1)} & \textbf{Predicted: Default (0)} \\ \hline
+\textbf{Actual: Repay (1)} & 45 & 55 \\
+\textbf{Actual: Default (0)} & 5 & 95 \\
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[label=(\alph*)]
+\item Compute the True Positive Rate (TPR) for Group A and Group B and determine whether the model satisfies the Equal Opportunity fairness criterion. Show your work.
+\item Propose a simple method the bank could use to adjust the classification for two groups to achieve Equal Opportunity in practice, assuming they start with a model that does not satisfy the criterion.
+\item Discuss any trade-offs or potential risks of adjusting classifications separately for each demographic group.
+\end{enumerate}
+\end{problem}
+
+\begin{studentanswer}[30]
+% students write here
+\end{studentanswer}
+
+
+
+% ------------------------------------------------------------
+\newpage
+\begin{problem}{12}{3}
+How many hours do you estimate you spent on this assignment? (graded on completion of (a), (b), and (c))
+\begin{enumerate}[label=(\alph*)]
+    \item Coding: \\
+    \item Written: \\
+    \item Reading: \\
+\end{enumerate}
+\end{problem}
+
+\begin{studentanswer}[6]
+\end{studentanswer}
+
+
+
+\begin{problem}{13}{Gratitude}
+Any feedback you would like to share (optional)?
+\end{problem}
+
+\begin{studentanswer}[4]
+
+\end{studentanswer}
+
+
+
+
+\end{document}

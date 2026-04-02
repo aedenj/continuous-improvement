@@ -1,0 +1,506 @@
+\documentclass[11pt]{article}
+
+% --- Packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{xparse}        % for NewDocumentEnvironment with optional args
+\usepackage{enumitem}
+\usepackage{tikz}
+\usepackage{ifthen}
+\usepackage{comment}       % to exclude solution blocks when hidden
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{caption}  % Optional, for better caption formatting
+
+% --- Page layout ---
+\geometry{margin=1in}
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+
+% --- Fancy header ---
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\Class}
+\lhead{\HomeworkTitle}
+\cfoot{\thepage}
+
+% --- Visual helpers: points badge ---
+\newcommand{\pointsbadge}[1]{%
+  \tikz[baseline=(X.base)] \node[draw,rounded corners=2pt,fill=gray!10,inner sep=3pt] (X) {\small #1 pts};%
+}
+
+% --- Problem environment ---
+% Usage:
+%   \begin{problem}[<points>]{<Title>}
+%   ...
+%   \end{problem}
+\NewDocumentEnvironment{problem}{m m}{%
+  \vspace{6pt}
+  \noindent\begin{tcolorbox}[colback=white,colframe=black!30,boxrule=0.6pt,arc=2pt,left=2pt,right=2pt]
+    \textbf{Problem #1 \pointsbadge{#2}:}
+    \medskip
+}{%
+  \end{tcolorbox}
+  \vspace{4pt}
+}
+
+% --- Student answer area ---
+% Usage:
+%   \begin{studentanswer}[<lines>]  % default lines = 6
+%   \end{studentanswer}
+% This creates vertical space equal to <lines> * \baselineskip with a subtle dotted guideline.
+\NewDocumentEnvironment{studentanswer}{ O{6} }{%
+  \vspace{6pt}
+  \begingroup
+  \setlength{\parindent}{0pt}%
+  \noindent\textit{Answer:}
+  % Repeated dotted line block
+  \par\noindent
+  \vspace{#1\baselineskip}
+  \par\noindent
+  \endgroup
+}{%
+  % nothing special on end
+}
+
+% --- Helpful small commands ---
+\newcommand{\points}[1]{\hfill \textit{(#1 pts)}}
+\newcommand{\breakpage}{\vspace{12pt}\hrule\vspace{12pt}}
+
+
+
+% --- Header info macros (customize per assignment) ---
+\newcommand{\Class}{CSED501}
+\newcommand{\Instructor}{Taylor Kessler Faulkner}
+\newcommand{\DueDate}{Due: \textbf{December 2, 2025}}
+\newcommand{\HomeworkTitle}{Homework \#4}
+\newcommand{\StudentName}{\underline{\hspace{5cm}} }
+
+\begin{document}
+
+
+
+\begin{center}
+  {\LARGE \HomeworkTitle} \\
+  \vspace{6pt}
+  {\large \Class} \\
+  \vspace{4pt}
+  \Instructor \hfill \DueDate \\
+  \vspace{8pt}
+  Name: \StudentName
+\end{center}
+
+\textbf{Instructions:}
+Complete the questions below and upload a PDF containing your written answers to Gradescope. 
+\begin{itemize}
+    \item Keep your answers within the provided space.
+    \item Answers can be handwritten, or typed and pasted into this PDF. 
+    \item Show your work; this makes giving partial credit easier!
+    \item True/False questions can be answered with \textbf{True/False}, but explanations can be added if you feel they are needed.
+    \item Numeric answers can be given in fraction or decimal form; if decimal, round to 2 places
+\end{itemize}
+
+Assigned reading (links can also be found in Canvas Week 4 Resources):
+\begin{itemize}
+
+\item Stackpole, B. (2025) \href{https://mitsloan.mit.edu/ideas-made-to-matter/climate-change-and-machine-learning-good-bad-and-unknown}{Climate change and machine learning - the good, bad, and unknown}, MIT Sloan. (Accessed: 17 November 2025). 
+\end{itemize}
+
+
+\vspace{12pt}
+\hrule
+\vspace{12pt}
+
+\newpage
+
+% ---------------------------
+% Problems
+% ---------------------------
+
+\begin{problem}{1}{7}
+True/False. Mark each statement as True or False and briefly justify your answer.
+\begin{enumerate}[label=(\alph*)]
+\item A Markov Decision Process (MDP) assumes that the future depends on every past action an agent has taken.
+\item The state-value function $V^{\pi}(s)$ represents the expected return starting in state $s$ and following policy $\pi$
+\item Softmax exploration assigns higher probability to actions with higher estimated value.
+\item An $\epsilon$-greedy policy always chooses the optimal action with probability 1.
+\item A perceptron with no activation function is equivalent to a linear classifier.
+\item Weight initialization can affect the speed and quality of neural network training.
+\item Batch training computes gradients using the entire dataset at once.
+
+\end{enumerate}
+\end{problem}
+
+\begin{studentanswer}[10]
+% students write here
+\end{studentanswer}
+
+
+
+% ------------------------------------------------------------
+\begin{problem}{2}{14}
+Consider a classic RL environment called the Cliff Walking problem. This problem has a $4 \times 12$ gridworld environment:
+
+\begin{verbatim}
+. . . . . . . . . . . .
+. . . . . . . . . . . .
+S . . . . . . . . . . G
+! ! ! ! ! ! ! ! ! ! ! !
+\end{verbatim}
+
+Here, each state is marked by a symbol: S, G, ., or !. The states have the following definitions:
+
+\begin{itemize}
+    \item $S$ is the start state (bottom-left).
+    \item $G$ is the goal state (bottom-right).
+    \item The bottom row of !'s between $S$ and $G$ is the \textbf{cliff}.
+    \item Every other state is represented with a period (.)
+\end{itemize}
+
+Consider the following problem settings:
+\begin{itemize}
+    \item Stepping into the cliff yields reward $-100$ and sends the agent back to $S$.
+    \item All other transitions give reward $-1$.
+    \item The agent uses an $\epsilon$-greedy policy with $\epsilon = 0.1$.
+    \item The agent uses $\gamma = 1$.
+\end{itemize}
+
+
+You will analyze how two RL algorithms with different update rules learn in this environment.
+
+\begin{enumerate}[label=(\alph*)]
+\item Here is the Q-learning update (note the difference from the in-class Q-learning update: $Q(S_t, A_t)$ on the right-hand side is not multiplied by $1-\alpha$. This is just a slightly different formulation, but $\alpha$ still signifies the weight given to new information):
+\[
+Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \Big[ R_{t+1} + \gamma \max_{a} Q(S_{t+1}, a) - Q(S_t, A_t) \Big].
+\]
+
+There is another algorithm, SARSA (\textbf{S}tate-\textbf{A}ction-\textbf{R}eward-\textbf{S}tate-\textbf{A}ction) that uses the following update rule:
+\[
+Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \Big[ R_{t+1} + \gamma Q(S_{t+1}, A_{t+1}) - Q(S_t, A_t) \Big].
+\]
+
+Carefully examine the targets for the two update rules:
+\[
+\text{Q-Learning target: } R_{t+1} + \gamma \max_a Q(S_{t+1}, a)
+\]
+\[
+\text{SARSA target: } R_{t+1} + \gamma Q(S_{t+1}, A_{t+1})
+\]
+
+In your own words, what quantity is SARSA using to estimate the value of the next state, and how does it differ from the quantity that Q-learning uses?
+
+PROBLEM CONTINUES ON NEXT PAGE
+\end{enumerate}
+\end{problem}
+
+\begin{problem}{2}{-}
+CONTINUED FROM PREVIOUS PAGE
+\begin{enumerate}
+
+\item[(b)] Suppose the agent receives reward $R_{t+1} = -1$ and arrives in state $S_{t+1}$. The Q-values in this state are:
+
+\[
+\begin{array}{c|c}
+\text{Action} & Q\text{-value} \\
+\hline
+\text{up} & -5 \\
+\text{right} & -3 \\
+\text{left} & -4 \\
+\text{down} & -9
+\end{array}
+\]
+
+Compute the probability of selecting each action in $S_{t+1}$, assuming an $\epsilon$-greedy behavior policy with $\epsilon = 0.1$.
+
+\item[(c)] Using the Q-values, $R_{t+1}$, and $S_{t+1}$, and the computed probabilities from part (b), compute two target values: the Q-learning target value and the \textit{expected} SARSA target value. Remember, an expected value is a weighted sum over all possibilities, each weighted by the probability of the possibility occurring. You do not need to comute the full update, just the targets as defined in part (a).
+
+\end{enumerate}
+\end{problem}
+
+\begin{studentanswer}[30]
+% students write here
+\end{studentanswer}
+
+
+
+\newpage
+
+% ------------------------------------------------------------
+\begin{problem}{3}{6}
+
+In reinforcement learning (RL), an agent interacts with an environment whose dynamics may be 
+\textbf{deterministic} (each action produces a fixed next state) or 
+\textbf{stochastic} (actions lead to random next states according to a probability distribution).
+
+Consider a gridworld similar to the one shown in class, with no fiery pit. There are walls (\#\#) that are impassable, a start state, and a goal state. An example is shown below of a 4x4 version of this gridworld setting. The agent starts at state $S$ and seeks to reach the goal $G$ with maximum return.
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+S &  &  &  \\ \hline
+  & \#\# &  &  \\ \hline
+  &  & \#\# &  \\ \hline
+  &  &  & G \\ \hline
+\end{tabular}
+\end{center}
+
+There are two versions of this environment:
+
+\begin{itemize}
+    \item \textbf{Deterministic}: every action moves the agent exactly as intended, unless blocked.
+    \item \textbf{Stochastic}: each intended action succeeds with probability $0.8$; with probability $0.2$, the agent slips into a random perpendicular direction.
+\end{itemize}
+
+\begin{enumerate}[label=(\alph*)]
+
+\item Suppose instead we use a \textbf{model-based planning} algorithm such as value iteration.  
+Describe one conceptual reason why planning is easier in the \textbf{deterministic} gridworld than in the \textbf{stochastic} gridworld. 
+
+\item Conceptually, for Q-learning, how does a stochastic environment affect learning and deployment differently than the randomness induced by $\epsilon$-greedy exploration? Discuss in terms of deployed agent behavior \textbf{and} the Q-learning update: \[
+Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \Big[ R_{t+1} + \gamma \max_{a} Q(S_{t+1}, a) - Q(S_t, A_t) \Big].
+\]
+
+
+\end{enumerate}
+
+
+
+\end{problem}
+
+
+\begin{studentanswer}[30]
+% students write here
+\end{studentanswer}
+
+
+% ------------------------------------------------------------
+\begin{problem}{4}{9}
+Consider a simplified robot navigation problem:
+
+\begin{itemize}
+    \item The robot moves (in cardinal directions, North, East, South, and West) in a \textbf{gridworld} of size $M \times N$ (rows $\times$ columns).  
+    \item At each cell, the robot can face one of \textbf{4 orientations}: North, East, South, or West (facing grid walls). This orientation is based on which direction the robot is moving: e.g. if the robot is moving to the right, it is facing right. However, choosing the "South" action will always result in the robot moving South, no matter the orientation.
+    \item The robot can carry \textbf{1 object}, which can either be picked up (object present) or not (object absent).  
+\end{itemize}
+
+\begin{enumerate}[label=(\alph*)]
+    \item If you want the robot to have all of the information described in the above bullet points, how many possible states are there in the environment for a given $M \times N$ grid?  
+    Show your reasoning: what information does each state contain? 
+    \item What is the \textbf{minimum} number of states for a given $M \times N$ grid so that the state space still satisfies the Markov Assumption? Show your reasoning: what information does each state contain?
+    \item If the robot’s movements are \textbf{stochastic} (with some probability of slipping to adjacent cells), does the \textbf{state space size} change? Why or why not?
+\end{enumerate}
+
+\end{problem}
+
+\begin{studentanswer}[30]
+% students write here
+\end{studentanswer}
+
+
+% ------------------------------------------------------------
+\begin{problem}{5}{15}
+A streaming service tracks customer engagement across three states:
+
+\begin{itemize}
+    \item \textbf{State 0:} Active subscriber (watches content regularly)
+    \item \textbf{State 1:} Casual subscriber (watches content occasionally)
+    \item \textbf{State 2:} Churned (canceled subscription)
+\end{itemize}
+
+The transition probabilities of moving between these states from month to month are modeled as a Markov chain:
+
+\[
+P = 
+\begin{bmatrix}
+0.2 & 0.5 & 0.3 \\
+0.0 & 0.6 & 0.4 \\
+0.1 & 0.0 & 0.9
+\end{bmatrix},
+\]
+
+where $P[i][j]$ represents the probability that a customer in state $i$ moves to state $j$ the following month. For the following questions, you are allowed to use a matrix math calculator to compute your answers, but you must show your work step by step (e.g. for question (a), show the resulting probabilities vector/values for each month (1 and 2).
+
+\begin{enumerate}[label=(\alph*)]
+    \item \textbf{Two-Month Churn Probability:}  
+    If a customer is an \textit{active subscriber} (state 0) this month, what is the probability that they will have \textit{churned} (state 2) two months from now?
+    
+    \item \textbf{Long-Term Customer Distribution:}  
+    Compute the stationary distribution $\pi = (\pi_0, \pi_1, \pi_2)$ of the Markov chain. Interpret the result in terms of the proportion of customers expected to be active, casual, or churned in the long run.
+    
+    \item \textbf{Marketing Intervention:}  
+    Suppose the company introduces a targeted marketing campaign that reduces the probability of active subscribers churning from $0.3$ to $0.1$. Conceptually, how would this change the stationary distribution? What would be the expected effect on long-term churn? An intuitive description of how the stationary distribution and long-term churn would change will suffice here: note whether whether each value in the stationary distribution will raise, lower, or stay the same.
+\end{enumerate}
+\end{problem}
+
+\begin{studentanswer}[30]
+% students write here
+\end{studentanswer}
+
+
+\newpage
+
+% ------------------------------------------------------------
+
+\begin{problem}{6}{8}
+Choose one (1) question to answer:
+
+\begin{itemize}
+    \item Climate data coverage varies greatly across the globe. In 1-2 paragraphs, discuss how biases in data collection or model design might impact vulnerable populations disproportionately.
+    \item In your own words, provide a pro and con argument (each 1 paragraph) for machine learning's potential impact on the environment Your answer should be informed by the assigned reading (Climate change and machine learning - the good, bad, and unknown), but you can reference other sources if desired.
+\end{itemize}
+
+\end{problem}
+
+\begin{studentanswer}[30]
+% students write here
+\end{studentanswer}
+
+
+% ------------------------------------------------------------
+
+\begin{problem}{7}{10}
+In 1--2 paragraphs, discuss a problem that you’re interested in solving (this could be related to a work problem, a potential personal project, or just something that interests you) that could be solved with RL \textbf{or} neural networks. If you propose an RL problem, include an initial reward function you might try and discuss whether you would use a model-based or model-free algorithm. If you propose a neural network problem, discuss a potential dataset and what the output layer of your neural net might be.
+\end{problem}
+
+\begin{studentanswer}[20]
+% students write here
+\end{studentanswer}
+
+
+
+% ------------------------------------------------------------
+
+\begin{problem}{8}{10}
+
+Consider a single-layer neural network with one hidden neuron using a sigmoid activation function:
+\[
+\sigma(z) = \frac{1}{1 + e^{-z}}
+\]
+
+The network takes a 2-dimensional input vector $x$ and has weights \(w = [w_0, w_1, w_2]^T = [0.5, 2, -1]^T\). The output of the network is:
+\[
+y = \sigma(w_0 + w_1 x[1] + w_2 x[2] )
+\]
+
+\begin{center}
+    \includegraphics[width=0.2\textwidth]{images/a4_neural-net.png}
+    \captionof{figure}{Visualization of described neural network}
+    \label{img:nn}
+\end{center}
+
+\begin{enumerate}[label=(\alph*)]
+    \item Compute the output \(y\) for the input $x[1] = 1$, $x[2] = 2$. Show your work.
+    \item After running input $x$ from part (a) through the network, you find that the true label for $x$ (not the output from the neural net) is 0.8. Using MSE as loss function, perform one round of backpropagation (i.e. update all three weights once). Use the step size $\eta = 0.1$. Show your work. You can use an online calculus tool (or other method) to compute the gradients needed for backpropagation if you so choose, but all other work should be shown step by step. Make sure you explicitly state what the gradient is before plugging in numbers.
+\end{enumerate}
+
+\end{problem}
+
+\begin{studentanswer}[30]
+% students write here
+\end{studentanswer}
+
+% ------------------------------------------------------------
+\newpage
+
+\begin{problem}{9}{9}
+Your usual team of neophytes just found out about reinforcement learning, and they can't wait to deploy the Q-learning algorithm in real life. They were tasked with training a warehouse robot using Q-learning. The robot must pick items from shelves and place them on a conveyor belt. The environment is modeled as a grid, and the robot receives a reward of +10 for each correctly placed item and -1 for every step taken.
+
+The neophytes tell you that they have decided to run RL with the following setup:
+
+\begin{itemize}
+    \item Q-learning with learning rate $\alpha = 1.0$
+    \item Discount factor $\gamma = 0.0$
+    \item $\epsilon$-greedy exploration with $\epsilon = 0.001$ (fixed)
+\end{itemize}
+
+Unfortunately, the robot isn't working very well, and they have come to you for advice.
+
+\begin{enumerate}[label=(\alph*)]
+    \item The robot seems to move randomly and often fails to pick items efficiently. Identify all hyperparameter settings (learning rate, discount factor, and exploration strategy) that could be causing these issues. Propose appropriate adjustments to those hyperparameters that will improve learning and performance. Explain your reasoning. Note: the adjustments can be described as "raise" or "lower" without actual numbers; however, the reason why you choose to lower or raise any hyperparameters must be explained in a sentence.
+
+    \item Suppose the state space is represented as the raw position of the robot in a 100×100 grid and the positions of all items on shelves. The action space is “move up, down, left, right, pick, place.” Discuss why Q-learning (or SARSA, or any other similar algorithm) might struggle with this setup. Propose a way to modify the MDP (state space, reward, etc) that might improve Q-learning's performance.
+
+    \item The company notices that when the robot is deployed, it frequently collides with obstacles that weren’t modeled in the simulator. Explain why these real-world errors might be taking place. 
+
+    
+\end{enumerate}
+
+\end{problem}
+
+\begin{studentanswer}[30]
+% students write here
+\end{studentanswer}
+
+
+\newpage
+
+% ------------------------------------------------------------
+
+\begin{problem}{10}{9}
+Now your neophytes have learned about neural networks, and they want to apply them to any and every problem. They have been tasked with predicting the time until failure (in hours) for a set of industrial machines using sensor data. Each machine has features such as vibration level, temperature, operating hours, and load. 
+
+They come to you with the following plan:
+
+\begin{enumerate}[label=(\alph*)]
+\item They'll standardize the features (and labels if needed) to put all numbers in a similar range.
+\item Because this is a regression problem, they will not use activation functions on any of their neurons.
+\item They'll run training for 1 epoch on a dataset of 20,000 machine readings.
+\end{enumerate}
+
+
+
+For each step of the team’s proposal, write 1–2 sentences arguing either:
+\begin{itemize}
+    \item That the step is appropriate and why
+    \item That the step is inappropriate, a suggestion for what to do instead and why
+\end{itemize}
+
+
+
+\end{problem}
+
+\begin{studentanswer}[30]
+% students write here
+\end{studentanswer}
+
+
+
+
+% ------------------------------------------------------------
+
+
+\begin{problem}{11}{3}
+How many hours do you estimate you spent on this assignment? (graded on completion of (a), (b), and (c))
+\begin{enumerate}[label=(\alph*)]
+    \item Coding: \\
+    \item Written: \\
+    \item Reading: \\
+\end{enumerate}
+\end{problem}
+
+\begin{studentanswer}[6]
+\end{studentanswer}
+
+
+
+\begin{problem}{12}{Gratitude}
+Any feedback you would like to share (optional)?
+\end{problem}
+
+\begin{studentanswer}[4]
+
+\end{studentanswer}
+
+
+
+
+
+
+
+\end{document}

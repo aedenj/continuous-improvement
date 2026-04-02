@@ -1,0 +1,346 @@
+\documentclass[11pt]{article}
+
+% --- Packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{xparse}        % for NewDocumentEnvironment with optional args
+\usepackage{enumitem}
+\usepackage{tikz}
+\usepackage{ifthen}
+\usepackage{comment}       % to exclude solution blocks when hidden
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+
+% --- Page layout ---
+\geometry{margin=1in}
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+
+% --- Fancy header ---
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\Class}
+\lhead{\HomeworkTitle}
+\cfoot{\thepage}
+
+% --- Visual helpers: points badge ---
+\newcommand{\pointsbadge}[1]{%
+  \tikz[baseline=(X.base)] \node[draw,rounded corners=2pt,fill=gray!10,inner sep=3pt] (X) {\small #1 pts};%
+}
+
+% --- Problem environment ---
+% Usage:
+%   \begin{problem}[<points>]{<Title>}
+%   ...
+%   \end{problem}
+\NewDocumentEnvironment{problem}{m m}{%
+  \vspace{6pt}
+  \noindent\begin{tcolorbox}[colback=white,colframe=black!30,boxrule=0.6pt,arc=2pt,left=2pt,right=2pt]
+    \textbf{Problem #1 \pointsbadge{#2}:}
+    \medskip
+}{%
+  \end{tcolorbox}
+  \vspace{4pt}
+}
+
+% --- Student answer area ---
+% Usage:
+%   \begin{studentanswer}[<lines>]  % default lines = 6
+%   \end{studentanswer}
+% This creates vertical space equal to <lines> * \baselineskip with a subtle dotted guideline.
+\NewDocumentEnvironment{studentanswer}{ O{6} }{%
+  \vspace{6pt}
+  \begingroup
+  \setlength{\parindent}{0pt}%
+  \noindent\textit{Answer:}
+  % Repeated dotted line block
+  \par\noindent
+  \vspace{#1\baselineskip}
+  \par\noindent
+  \endgroup
+}{%
+  % nothing special on end
+}
+
+% --- Helpful small commands ---
+\newcommand{\points}[1]{\hfill \textit{(#1 pts)}}
+\newcommand{\breakpage}{\vspace{12pt}\hrule\vspace{12pt}}
+
+% --- Header info macros (customize per assignment) ---
+\newcommand{\Class}{CSED501}
+\newcommand{\Instructor}{Taylor Kessler Faulkner}
+\newcommand{\DueDate}{Due: \textbf{October 28, 2025}}
+\newcommand{\HomeworkTitle}{Homework \#2}
+\newcommand{\StudentName}{\underline{\hspace{5cm}} }
+
+\begin{document}
+
+\begin{center}
+  {\LARGE \HomeworkTitle} \\
+  \vspace{6pt}
+  {\large \Class} \\
+  \vspace{4pt}
+  \Instructor \hfill \DueDate \\
+  \vspace{8pt}
+  Name: \StudentName
+\end{center}
+
+\textbf{Instructions:}
+Complete the questions below and upload a PDF containing your written answers to Gradescope. 
+\begin{itemize}
+    \item Keep your answers within the provided space.
+    \item Answers can be handwritten, or typed and pasted into this PDF. 
+    \item Show your work; this makes giving partial credit easier!
+    \item True/False questions can be answered with \textbf{True/False}, but explanations can be added if you feel they are needed.
+    \item Numeric answers can be given in fraction or decimal form; if decimal, round to 2 places
+\end{itemize}
+
+Assigned reading (links can also be found in Canvas Week 4 Resources):
+\begin{itemize}
+\item Friedler, Sorelle A., Carlos Scheidegger, and Suresh Venkatasubramanian. \href{https://cacm.acm.org/research/the-impossibility-of-fairness/}{"The (Im) possibility of Fairness: Different Value Systems Require Different Mechanisms For Fair Decision Making What does it mean to be fair?."} (2021).
+\end{itemize}
+
+\vspace{12pt}
+\hrule
+\vspace{12pt}
+
+
+
+\newpage
+
+% ---------------------------
+% Problems
+% ---------------------------
+
+\begin{problem}{1}{6}
+\textit{True/False Questions}
+\begin{enumerate}[label=(\alph*)]
+    \item Using PCA for dimensionality reduction provides a subset of the original features and is generally interpretable. 
+    \item Logistic regression minimizes the sum of squared errors (residuals).
+    \item Decision trees are less likely to overfit than random forests.
+    \item AdaBoost is the best choice for classifying data with extreme outliers.
+    \item When using PCA for dimensionality reduction on a training dataset of size $n$ by $D$, where $n$ is the number of training samples and $D$ is the number of initial features, you pick the $k$ principal components from the $n$ possible principal components created by PCA. 
+    \item Increasing the regularization parameter $C $ in an SVM makes the model more tolerant of misclassified points.
+\end{enumerate}
+\end{problem}
+
+\begin{studentanswer}[12]
+% students write here
+\end{studentanswer}
+
+
+% ------------------------------------------------------------
+
+\begin{problem}{2}{5}
+Consider the following confusion matrix:
+
+\begin{center}
+\begin{tabular}{c|c|c|}
+ & \textbf{Negative(actual)} & \textbf{Positive(actual)} \\
+\hline
+\textbf{Negative(predicted)} & 125 & 80 \\
+\hline
+\textbf{Positive(predicted)} & 75 & 120 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[label=(\alph*)]
+    \item Is the dataset balanced?
+    \item What are the numbers of TP, TN, FP, and FN?
+    \item What is the accuracy?
+    \item What are the precision and recall?
+    \item What is the F1 score?
+\end{enumerate}
+\end{problem}
+
+\begin{studentanswer}[20]
+% students write here
+\end{studentanswer}
+
+
+% ------------------------------------------------------------
+
+\begin{problem}{3}{9}
+You’re supervising a team, and one of your employees tells you about a plan to train a random forest classifier in parallel on a CPU with 8 cores. This employee details the plan as follows: 
+\begin{itemize}
+    \item[(a)] Put a copy of the whole training dataset on each core.
+    \item[(b)] Train a decision tree on that dataset with all of the features.
+    \item[(c)] Use the majority vote of the trees to choose a class. 
+\end{itemize}
+For each step of the plan, write 1-2 sentences explaining either why the suggested step is correct, or why the suggested step is wrong/suboptimal along with what should be done instead.  
+
+\end{problem}
+
+\begin{studentanswer}[25]
+% students write here
+\end{studentanswer}
+
+
+% ------------------------------------------------------------
+
+
+% ------------------------------------------------------------
+
+\begin{problem}{4}{10}
+The authors of ``The (Im) possibility of Fairness" describe two possible worldviews: What You See is What You Get (WYSIWYG) and We're All Equal (WAE).
+\begin{enumerate}[label=(\alph*)]
+\item In your own words, describe the difference between the two worldviews.
+\item Using an example not found in the article or class, propose a situation in which following WYSIWYG and WAE would lead to different outcomes. Describe the potential different outcomes and discuss their practical consequences. 
+\end{enumerate}
+\end{problem}
+
+\begin{studentanswer}[16]
+% students write here
+\end{studentanswer}
+
+
+
+% ------------------------------------------------------------
+\begin{problem}{5}{12}
+
+You are the Chief Research Officer of a personal loan company that commits to ethical and transparent decision-making. The company’s stated goal is to use explainable models that are aware of and mitigate systematic bias in loan approvals. Your proprietary data goes 60 years back and includes hundreds of features, such as income history, gender, race, credit score, zip code, criminal record, prior loan defaults, employment history, and dozens of additional behavioral and financial indicators which are not essential for answering the questions below. You want to predict whether an applicant will be able to pay back the loan they are currently requesting based on these attributes.  
+
+Your team proposes the following plan to maximize profit while staying true to the company's stated objective:
+
+\begin{itemize}
+    \item[(a)] Train very deep trees to maximize accuracy, but use all available 60 years of historical data in an attempt to improve generalization and prevent overfitting. 
+    \item[(b)] Remove obvious sensitive attributes such as gender and race, but keep all other financial and behavioral features.  
+    \item[(c)] Present decision paths(all feature splits from root to leaf) in a user-friendly manner to applicants to justify approvals or denials.  
+    \item[(d)] Use overall accuracy as the primary metric guiding model selection.
+\end{itemize}
+
+For each step of the team’s proposal, write 1–2 sentences arguing either:
+\begin{itemize}
+    \item That the step is appropriate and why
+    \item That the step is inappropriate, a suggestion for what to do instead and why
+\end{itemize}
+\end{problem}
+
+\begin{studentanswer}[18]
+% students write here
+\end{studentanswer}
+
+
+\newpage
+
+\begin{problem}{6}{16}
+
+Answer each of the following questions with 1-2 sentences or a mathematical formula where appropriate.
+
+\begin{enumerate}
+
+\item[(a)] You train a logistic regression classifier on inputs $(x_1, x_2)$, 
+but first expand them with all degree-2 polynomial features. For this two-dimensional input $x = (x_1, x_2)$ and the degree-2 polynomial expansion, explicitly write the function $P(y=1|x)$
+
+\item[(b)] Can we, in general(so not necessarily for polynomial features), compare $|w_i|$ across features to judge which features are the most important for classification? Explain why or why not.
+
+\item[(c)] Suppose you train a regularized logistic regression model with $L_2$ penalty.
+During training via gradient descent, does the log-likelihood of the data necessarily increase at every iteration? Why/why not?
+
+\item[(d)] For softmax logistic regression with $K$ classes we the parameter vectors $w_1,\dots,w_K$ and the model
+\[
+P(y=k | x)= \frac{e^{w_k^\top x}}{\sum_{j=1}^K e^{w_j^\top x}}.
+\]
+Suppose for a fixed input $x$ the model predicts class $k^* \in \{1, \dots, K \}$. That is, $k^* = \arg\max_k P(y=k | x)$. What can you say about the values $(w_{k^*}-w_k)^\top x$ for any class $k$ not equal to $k^*$?
+
+\end{enumerate}
+\end{problem}
+
+\begin{studentanswer}[30]
+% students write here
+\end{studentanswer}
+\newpage
+
+
+
+% ------------------------------------------------------------
+\begin{problem}{7}{10}
+In 1–2 paragraphs, discuss a problem that you’re interested in solving (this could be related to a work problem, a potential personal project, or just something that interests you) that could be solved with classification. 
+
+What kind of data might you start by collecting? What classification algorithm(s) would you try, and why?
+\end{problem}
+
+\begin{studentanswer}[24]
+% students write here
+\end{studentanswer}
+
+% ------------------------------------------------------------
+
+\begin{problem}{8}{14}
+You’re working on a problem to classify incoming emails into three inboxes: general, important, and spam. You decide to use logistic regression, using only one feature, the number of words in all caps included in the email.
+
+Take an example feature vector $x = [1, 2]$, where $x_0 = 1$ is the intercept term and $x_1 = 2$ is the number of words in all caps. We’ll provide you with learned model parameters for both binary (One-vs-Rest) and multinomial logistic regression:
+
+\[
+w_0 = [-1, 1], \quad w_1 = [-2, 2], \quad w_2 = [1, -0.5].
+\]
+
+You can use any calculator that you would like to compute $e^{-\hat{y}}$ and $e^{\hat{y}}$; round each $e^{\hat{y}}$ to 2 decimal places before computing probabilities.
+
+\begin{enumerate}[label=(\alph*)]
+    \item For binary logistic regression using one-vs-rest, you train a separate binary classifier for each class $k$, estimating 
+    \[
+    P(y=k \mid x) = \frac{1}{1 + e^{-w_k^T x}}.
+    \]
+    First, write the probability from each binary classifier in the form $P(y=k \mid x) = \frac{1}{1 + e^{-\hat{y}}}$, with your computed values for $w_k^T x$ plugged in for $\hat{y}$. Then find the probability as a decimal value rounded to two places from each binary classifier. Finally, identify the predicted class of $x$.
+    \item For multinomial logistic regression using softmax, you directly estimate the probabilities
+    \[
+    P(y=k \mid x) = \frac{e^{w_k^T x}}{\sum_{j=0}^2 e^{w_j^T x}}.
+    \]
+    First, write the probability from each class in the form $P(y=k \mid x) = \frac{e^{\hat{y}}}{\sum_{j=0}^2 e^{\hat{y}}}$, with your computed values for $w_k^T x$ plugged in for $\hat{y}$. Then find the probability as a decimal value rounded to two places for each class. Finally, identify the predicted class of $x$.
+\end{enumerate}
+\end{problem}
+
+\begin{studentanswer}[24]
+% students write here
+\end{studentanswer}
+
+\newpage
+
+% ------------------------------------------------------------
+
+
+\begin{problem}{9}{15}
+Decision trees can be used for regression as well as classification. In this problem, you will walk through how the inner workings of the decision tree would need to change to output a continuous value (like the price of a house) instead of a class. We'll refer to decision trees for classification tasks as \textit{classification trees}, and decision trees for regression tasks as \textit{regression trees}. 
+\begin{enumerate}[label=(\alph*)]
+\item Classification trees choose splits based on metrics such as Gini impurity. What kind of metric might a regression tree choose splits on instead (there are several correct answers here)? Would it minimize or maximize that metric? 
+\item A ``good" split for a classification tree is one where a high proportion of data points are from a single class. How would a ``good" split be defined for a regression tree (without referencing specific quality metrics)?
+\item In a classification tree, the prediction at a leaf node is often the majority class. In a regression tree, what might the predicted value at a leaf node be, and why?
+\end{enumerate}
+
+
+\end{problem}
+
+\begin{studentanswer}[30]
+% students write here
+\end{studentanswer}
+% ------------------------------------------------------------
+
+\begin{problem}{10}{3}
+How many hours do you estimate you spent on this assignment? (graded on completion of (a), (b), and (c))
+\begin{enumerate}[label=(\alph*)]
+    \item Coding \\
+    \item Written \\
+    \item Reading \\
+\end{enumerate}
+\end{problem}
+
+\begin{studentanswer}[6]
+\end{studentanswer}
+
+\begin{problem}{11}{Gratitude}
+Any feedback you would like to share (optional)?
+\end{problem}
+
+\begin{studentanswer}[4]
+\end{studentanswer}
+
+
+\end{document}
